@@ -18,12 +18,12 @@ class AddressSerializer(serializers.ModelSerializer):
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'first_name', 'last_name', 'phone', 'bio', 'imageUrl']
+        fields = ['id', 'imageUrl', 'first_name', 'last_name', 'gender', 'phone', 'bio']
 
 
 class UserSerializer(BaseUserSerializer):
     class Meta(BaseUserSerializer.Meta):
-        fields = ['id', 'username','first_name', 'last_name', 'phone', 'bio', 'imageUrl']
+        fields = ['id', 'username', 'first_name', 'last_name', 'phone', 'bio', 'imageUrl']
 
 
 class InterestedInSerializer(serializers.HyperlinkedModelSerializer):
@@ -33,11 +33,11 @@ class InterestedInSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class PostsSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
-
+    # user = UserSerializer()
     class Meta:
         model = Post
-        fields = ['id', 'user', 'title', 'content', 'description', 'imageUrl']
+        fields = '__all__'
+        # fields = ['id', 'user', 'title', 'content', 'description', 'imageUrl']
 
 
 class WritePostSerializer(serializers.ModelSerializer):
@@ -45,7 +45,7 @@ class WritePostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ['id', 'user_id', 'title', 'content', 'description', 'imageUrl']
+        fields = ['id', 'user_id', 'description', 'imageUrl', 'content_type', 'uploaded_from']
 
 
 class MyPostsSerializer(serializers.ModelSerializer):
