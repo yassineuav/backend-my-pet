@@ -57,14 +57,10 @@ class Comments(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
 
-class Likes(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-
-class Views(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
-    viewed_at = models.DateTimeField(auto_now_add=True)
+# class Views(models.Model):
+#     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
+#     viewed_at = models.DateTimeField(auto_now_add=True)
+#     post = models.ForeignKey('Post', on_delete=models.CASCADE)
 
 
 class Post(models.Model):
@@ -94,5 +90,13 @@ class Post(models.Model):
     create_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     comments = models.ForeignKey(Comments, on_delete=models.CASCADE, blank=True, null=True)
-    likes = models.ForeignKey(Likes, on_delete=models.CASCADE, blank=True, null=True)
-    views = models.ForeignKey(Views, on_delete=models.CASCADE, blank=True, null=True)
+    likes = models.ForeignKey('Like',on_delete=models.CASCADE, blank=True, null=True)
+    likes_count = models.IntegerField(default=0)
+
+
+class Like(models.Model):
+    user_id = models.IntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    liked_post = models.IntegerField()
+
+

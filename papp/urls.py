@@ -14,10 +14,12 @@ router.register(r'address', views.AddressViewSet)
 router.register(r'interested-in', views.InterestedInViewSet)
 
 router.register(r'post', views.PostViewSet, basename='post')
+router.register(r'likes', views.LikesViewSet, basename='likes')
 router.register(r'mypost', views.MyPostViewSet, basename='mypost')
 
 
 urlpatterns = [
+    path('__debug__/', include('debug_toolbar.urls')),
     path('', include(router.urls)),
     path('admin/', admin.site.urls),
     path('auth/', include('djoser.urls')),

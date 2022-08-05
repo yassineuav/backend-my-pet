@@ -28,7 +28,8 @@ INSTALLED_APPS = [
     'core',
     'rest_framework',
     'corsheaders',
-    'djoser'
+    'djoser',
+    "debug_toolbar",
 ]
 
 MIDDLEWARE = [
@@ -37,9 +38,10 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    "corsheaders.middleware.CorsMiddleware"
+    "corsheaders.middleware.CorsMiddleware",
 ]
 
 ROOT_URLCONF = 'papp.urls'
@@ -75,6 +77,7 @@ TEMPLATES = [
     },
 ]
 
+
 WSGI_APPLICATION = 'papp.wsgi.application'
 
 
@@ -84,6 +87,10 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', '192.168.205.68']
+
+INTERNAL_IPS = [
+    "127.0.0.1",
+]
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases

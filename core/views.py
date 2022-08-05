@@ -8,8 +8,8 @@ from rest_framework.viewsets import ModelViewSet, GenericViewSet
 
 
 from .serializers import UserSerializer, ProfileSerializer, InterestedInSerializer, AddressSerializer, \
-    WritePostSerializer, PostsSerializer, MyPostsSerializer
-from .models import InterestedIn, Post, User, Address
+    WritePostSerializer, PostsSerializer, MyPostsSerializer, LikesSerializer, WriteLikesSerializer
+from .models import InterestedIn, Post, User, Address, Like
 
 
 class ProfileViewSet(CreateModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
@@ -63,11 +63,24 @@ class InterestedInViewSet(viewsets.ModelViewSet):
     # permission_classes = [permissions.IsAuthenticated]
 
 
+class LikesViewSet(ModelViewSet):
+    queryset = Like.objects.all()
+    # serializer_class = LikesSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_serializer_class(self):
+        if self.request.method == 'PUT' or self.request.method == 'POST':
+            # return WriteLikesSerializer
+            return LikesSerializer
+        else:
+            return LikesSerializer
+
+
 class PostViewSet(ModelViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly]
+    # queryset = Post.objects.select_related('likes').all()
     queryset = Post.objects.all()
-    # serializer_class = PostSerializer
-    #     
+    #
     # def get_queryset(self):
     #     user = self.request.user
 
@@ -83,7 +96,7 @@ class PostViewSet(ModelViewSet):
 
 
 class MyPostViewSet(ModelViewSet):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
     serializer_class = WritePostSerializer
 
     def get_queryset(self):
