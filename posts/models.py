@@ -30,14 +30,29 @@ class Views(models.Model):
 
 class Post(models.Model):
     title = models.CharField(max_length=150)
-    description = models.TextField()
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    # description = models.TextField()
+    # user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
 
-    def likes_count(self):
-        return self.likes.all().count()
+    # def likes_count(self):
+    #     return self.likes.all().count()
+    #
+    # def __str__(self):
+    #     return '%s' % self.title
 
 
 class Like(models.Model):
-    like = models.CharField(max_length=20)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='post_likes')
+    # user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='post_likes')
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='likes')
+
+# learn
+
+
+class Collection(models.Model):
+    title = models.CharField(max_length=255)
+
+
+class Product(models.Model):
+    title = models.CharField(max_length=255)
+    description = models.TextField(max_length=255)
+    price = models.DecimalField(max_digits=4, decimal_places=2)
+    collection = models.ForeignKey(Collection, on_delete=models.PROTECT)
