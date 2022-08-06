@@ -8,8 +8,8 @@ from rest_framework.viewsets import ModelViewSet, GenericViewSet
 
 
 from .serializers import UserSerializer, ProfileSerializer, InterestedInSerializer, AddressSerializer, \
-    WritePostSerializer, PostsSerializer, MyPostsSerializer, LikesSerializer, WriteLikesSerializer
-from .models import InterestedIn, Post, User, Address, Like
+    WritePostSerializer, PostsSerializer, LikesSerializer
+from .models import InterestedIn, Post, User, Address
 
 
 class ProfileViewSet(CreateModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
@@ -64,7 +64,7 @@ class InterestedInViewSet(viewsets.ModelViewSet):
 
 
 class LikesViewSet(ModelViewSet):
-    queryset = Like.objects.all()
+    queryset = Post.objects.all()
     # serializer_class = LikesSerializer
     permission_classes = [IsAuthenticated]
 
@@ -79,7 +79,7 @@ class LikesViewSet(ModelViewSet):
 class PostViewSet(ModelViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly]
     # queryset = Post.objects.select_related('likes').all()
-    queryset = Post.objects.all()
+    queryset = Post.objects.select_related('user').all()
     #
     # def get_queryset(self):
     #     user = self.request.user
@@ -104,3 +104,5 @@ class MyPostViewSet(ModelViewSet):
         if user.is_staff:
             return Post.objects.all()
         return Post.objects.filter(user_id=user.id)
+
+

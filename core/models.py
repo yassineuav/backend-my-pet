@@ -7,8 +7,7 @@ class User(AbstractUser):
     GENDER_FEMALE = 'F'
     GENDER_STATUS_CHOICES = [
         (GENDER_MALE, 'Male'),
-        (GENDER_FEMALE, 'Female'),
-    ]
+        (GENDER_FEMALE, 'Female')]
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=255)
     bio = models.TextField()
@@ -57,10 +56,16 @@ class Comments(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
 
-# class Views(models.Model):
-#     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
-#     viewed_at = models.DateTimeField(auto_now_add=True)
-#     post = models.ForeignKey('Post', on_delete=models.CASCADE)
+class Like(models.Model):
+    user_id = models.IntegerField()
+    create_at = models.DateTimeField(auto_now_add=True)
+    like_post_id = models.IntegerField()
+
+
+class Views(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
+    viewed_at = models.DateTimeField(auto_now_add=True)
+    post = models.ForeignKey('Post', on_delete=models.CASCADE)
 
 
 class Post(models.Model):
@@ -90,13 +95,5 @@ class Post(models.Model):
     create_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     comments = models.ForeignKey(Comments, on_delete=models.CASCADE, blank=True, null=True)
-    likes = models.ForeignKey('Like',on_delete=models.CASCADE, blank=True, null=True)
+    likes = models.ForeignKey(Like, on_delete=models.CASCADE, blank=True, null=True)
     likes_count = models.IntegerField(default=0)
-
-
-class Like(models.Model):
-    user_id = models.IntegerField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    liked_post = models.IntegerField()
-
-

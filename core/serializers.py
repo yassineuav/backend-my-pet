@@ -1,6 +1,6 @@
 from django.forms import IntegerField
 from rest_framework import serializers
-from .models import InterestedIn, Post, User, Address, Like
+from .models import InterestedIn, Post, User, Address
 from djoser.serializers import UserSerializer as BaseUserSerializer,\
     UserCreateSerializer as BaseUserCreateSerializer
 
@@ -34,32 +34,24 @@ class InterestedInSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class LikesSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Like
-        fields = '__all__'
-
-
-class WriteLikesSerializer(serializers.ModelSerializer):
     user_id = serializers.IntegerField()
-    liked_post_id = serializers.IntegerField()
+    post_id = serializers.IntegerField()
 
     class Meta:
-        model = Like
-        fields = ['id', 'user_id', 'liked_post_id']
+        model = Post
+        fields = ['id', 'user_id', 'post_id']
 
 
 class PostsSerializer(serializers.ModelSerializer):
     user = UserSerializer()
-    # likes = serializers.IntegerField()
-
+    likes = LikesSerializer()
     # likes_count = Like.objects.filter('liked_post==post.id').Count()
 
     class Meta:
         model = Post
-        # fields = '__all__'
         fields = ['id', 'user', 'description', 'imageUrl',
                   'content_type', 'display', 'create_at',
-                  'comments', 'likes_count', 'uploaded_from']
+                  'comments', 'likes_count', 'uploaded_from', 'likes']
 
 
 class WritePostSerializer(serializers.ModelSerializer):

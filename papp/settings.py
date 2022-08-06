@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'djoser',
     "debug_toolbar",
+    'posts'
 ]
 
 MIDDLEWARE = [
