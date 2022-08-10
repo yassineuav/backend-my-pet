@@ -43,31 +43,6 @@ class InterestedIn(models.Model):
     iconUrl = models.ImageField(upload_to='interested/icons', default='')
 
 
-class Tags(models.Model):
-    tag = models.CharField(max_length=255)
-    suggestedTimes = models.IntegerField()
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    create_at = models.DateTimeField(auto_now_add=True)
-
-
-class Comments(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
-    comment = models.CharField(max_length=500)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-
-class Like(models.Model):
-    user_id = models.IntegerField()
-    create_at = models.DateTimeField(auto_now_add=True)
-    like_post_id = models.IntegerField()
-
-
-class Views(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
-    viewed_at = models.DateTimeField(auto_now_add=True)
-    post = models.ForeignKey('Post', on_delete=models.CASCADE)
-
-
 class Post(models.Model):
     UPLOAD_FROM_ANDROID = 'A'
     UPLOAD_FROM_IPHONE = 'I'
@@ -94,6 +69,28 @@ class Post(models.Model):
     display = models.BooleanField(default=True)
     create_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    comments = models.ForeignKey(Comments, on_delete=models.CASCADE, blank=True, null=True)
-    likes = models.ForeignKey(Like, on_delete=models.CASCADE, blank=True, null=True)
-    likes_count = models.IntegerField(default=0)
+
+
+class Like(models.Model):
+    user_id = models.IntegerField()
+    create_at = models.DateTimeField(auto_now_add=True)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='likes')
+
+
+class Tags(models.Model):
+    tag = models.CharField(max_length=255)
+    suggestedTimes = models.IntegerField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    create_at = models.DateTimeField(auto_now_add=True)
+
+
+class Comments(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
+    comment = models.CharField(max_length=500)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class Views(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
+    viewed_at = models.DateTimeField(auto_now_add=True)
+    post = models.ForeignKey('Post', on_delete=models.CASCADE)

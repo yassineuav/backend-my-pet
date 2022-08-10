@@ -1,3 +1,4 @@
+from django.db.models import Count
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.generics import RetrieveAPIView
@@ -9,7 +10,7 @@ from rest_framework.viewsets import ModelViewSet, GenericViewSet
 
 from .serializers import UserSerializer, ProfileSerializer, InterestedInSerializer, AddressSerializer, \
     WritePostSerializer, PostsSerializer, LikesSerializer
-from .models import InterestedIn, Post, User, Address
+from .models import InterestedIn, Post, User, Address, Like
 
 
 class ProfileViewSet(CreateModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
@@ -64,8 +65,7 @@ class InterestedInViewSet(viewsets.ModelViewSet):
 
 
 class LikesViewSet(ModelViewSet):
-    queryset = Post.objects.all()
-    # serializer_class = LikesSerializer
+    queryset = Like.objects.all()
     permission_classes = [IsAuthenticated]
 
     def get_serializer_class(self):
@@ -79,7 +79,7 @@ class LikesViewSet(ModelViewSet):
 class PostViewSet(ModelViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly]
     # queryset = Post.objects.select_related('likes').all()
-    queryset = Post.objects.select_related('user').all()
+    queryset = Post.objects.annotate(likes_count=Count('likes')).all()
     #
     # def get_queryset(self):
     #     user = self.request.user

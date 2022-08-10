@@ -5,13 +5,14 @@ from rest_framework.response import Response
 from rest_framework.status import HTTP_204_NO_CONTENT, HTTP_405_METHOD_NOT_ALLOWED, HTTP_201_CREATED
 from rest_framework.views import APIView
 
+
 from .models import Post, Collection, Product
 from .serializers import PostSerializer, CollectionSerializer, ProductSerializer
 
 
 class ProductList(APIView):
     def get(self, request):
-        queryset = Product.objects.all()
+        queryset = Product.objects.select_related('collection').all()
         serializer = ProductSerializer(queryset, many=True)
         return Response(data=serializer.data)
 
@@ -22,6 +23,18 @@ class ProductList(APIView):
         return Response(data=serializer.data, status=HTTP_201_CREATED)
 
 
+class ProductDetail(APIView):
+    def get(self, request, pk):
+        product = get_object_or_404(Product, pk=pk)
+        serializer = ProductSerializer(product)
+        return Response(serializer.data)
+
+    def post(self, request, pk):
+        product = get_object_or_404(Product, pk=pk)
+        serializer = ProductSerializer(product, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
 
 
 @api_view(['GET', 'POST'])
