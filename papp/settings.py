@@ -103,7 +103,7 @@ DATABASES = {
         'NAME': 'papp',
         'HOST': 'localhost',
         'USER': 'root',
-        'PASSWORD': 'Yassine123!@#'
+        'PASSWORD': 'Yassine123'
     }
 }
 
