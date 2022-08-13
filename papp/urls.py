@@ -17,6 +17,8 @@ router.register(r'post', views.PostViewSet, basename='post')
 router.register(r'likes', views.LikesViewSet, basename='likes')
 router.register(r'mypost', views.MyPostViewSet, basename='mypost')
 
+admin.site.site_header = 'PAPP Admin Panel'
+admin.site.index_title = "Admin [Yassine Khaidouch]"
 
 urlpatterns = [
     path('', include(router.urls)),

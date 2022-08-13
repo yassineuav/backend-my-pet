@@ -70,6 +70,13 @@ class Post(models.Model):
     create_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
+    def __str__(self) -> str:
+        return self.description
+
+    class Meta:
+        ordering = ['description']
+
+
 
 class Like(models.Model):
     user_id = models.IntegerField()
