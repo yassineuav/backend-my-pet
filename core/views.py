@@ -1,4 +1,5 @@
-from django.db.models import Count
+from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Count, Q, Exists, OuterRef
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.generics import RetrieveAPIView
@@ -9,7 +10,7 @@ from rest_framework.viewsets import ModelViewSet, GenericViewSet
 
 
 from .serializers import UserSerializer, ProfileSerializer, InterestedInSerializer, AddressSerializer, \
-    WritePostSerializer, PostsSerializer, LikesSerializer
+    WritePostSerializer, PostsSerializer, LikesSerializer, CheckLikesSerializer
 from .models import InterestedIn, Post, User, Address, Like
 
 
@@ -75,15 +76,49 @@ class LikesViewSet(ModelViewSet):
         else:
             return LikesSerializer
 
+    @action(detail=False, methods=['GET', 'DELETE'], permission_classes=[IsAuthenticated])
+    def check(self, request):
+        # (like, created) = Like.objects.get_or_create(user_id=request.user.id, post_id=request.GET.get('post_id'))
+        # like = Like.objects.filter(user_id=request.user.id)
+
+        # like = Like.objects.filter(user_id=request.user.id)
+
+        print("post id : ", request.GET.get('post_id'))
+        print("user id : ", request.user.id)
+
+        if request.method == 'GET':
+            (like, created) = Like.objects.get_or_create(user_id=request.user.id, post_id=request.GET.get('post_id'))
+            serializer = CheckLikesSerializer(like)
+            print("like :", serializer.data)
+            print("created :", created)
+            if not created:
+                delete_like = Like.objects.get(user_id=request.user.id, post_id=request.GET.get('post_id')).delete()
+                print("response : ", delete_like)
+                return Response(serializer.data)
+            return Response(serializer.data)
+
+    #     like = Like.objects.get(user_id=request.user.id, post_id=request.GET.get('post_id'))
+            #     serializer = CheckLikesSerializer(like)
+            #     return Response(serializer.data)
+            # except ObjectDoesNotExist:
+            #     return Response({"liked": False})
+
+        # elif request.method == 'PUT':
+        #     serializer = CheckLikesSerializer(like, data=request.data)
+        #     serializer.is_valid(raise_exception=True)
+        #     serializer.save()
+        #     return Response(serializer.data)
+
 
 class PostViewSet(ModelViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly]
     # queryset = Post.objects.select_related('likes').all()
-    queryset = Post.objects.annotate(likes_count=Count('likes')).all()
-    #
-    # def get_queryset(self):
-    #     user = self.request.user
 
+    def get_queryset(self):
+        user = self.request.user
+        liked = Like.objects.filter(user_id=user.id, post_id=OuterRef('pk'))
+        return Post.objects.annotate(likes_count=Count('likes')).annotate(liked=Exists(liked)).all()
+    # queryset = Post.objects.annotate(likes_count=Count('likes')).annotate(liked=Exists('liked')).all()
     #     if user.is_staff:
     #         return Post.objects.all()
     #     return Post.objects.filter(user_id=user.id)

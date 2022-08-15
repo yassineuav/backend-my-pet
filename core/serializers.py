@@ -34,21 +34,33 @@ class InterestedInSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class LikesSerializer(serializers.ModelSerializer):
+    post_id = serializers.IntegerField()
 
     class Meta:
         model = Like
-        fields = '__all__'
+        fields = ['id', 'user_id', 'post_id', 'create_at']
+
+
+class CheckLikesSerializer(serializers.ModelSerializer):
+    post_id = serializers.IntegerField()
+    user_id = serializers.IntegerField()
+    liked = serializers.BooleanField(default=True)
+
+    class Meta:
+        model = Like
+        fields = ['id', 'user_id', 'post_id', 'create_at', 'liked']
 
 
 class PostsSerializer(serializers.ModelSerializer):
     user = UserSerializer()
     likes_count = serializers.IntegerField(read_only=True)
+    liked = serializers.BooleanField(default=False)
 
     class Meta:
         model = Post
         fields = ['id', 'user', 'description', 'imageUrl',
                   'content_type', 'display', 'create_at',
-                  'likes_count', 'uploaded_from']
+                  'likes_count', 'uploaded_from', 'liked']
 
 
 class WritePostSerializer(serializers.ModelSerializer):

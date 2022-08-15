@@ -63,7 +63,7 @@ class Post(models.Model):
     content_type = models.CharField(max_length=1, choices=CONTENT_TYPE_STATUS_CHOICES, default=CONTENT_TYPE_IMAGE)
 
     description = models.TextField()
-    imageUrl = models.ImageField(upload_to='post/images', default='')
+    imageUrl = models.ImageField(upload_to='post/images', default='post/images/pet-sitting-pg.jpg')
     usersIn = models.IntegerField(default=0)
     suggestedTimes = models.IntegerField(default=0)
     display = models.BooleanField(default=True)
@@ -75,7 +75,6 @@ class Post(models.Model):
 
     class Meta:
         ordering = ['description']
-
 
 
 class Like(models.Model):
