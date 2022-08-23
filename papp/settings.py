@@ -58,7 +58,7 @@ REST_FRAMEWORK = {
 
 SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('JWT',),
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=5),
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=365),
 }
 
 
@@ -158,3 +158,5 @@ DJOSER = {
         'current_user': 'core.serializers.UserSerializer',
     }
 }
+
+AUTH_USER_MODEL = 'core.User'

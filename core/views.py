@@ -117,7 +117,9 @@ class PostViewSet(ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         liked = Like.objects.filter(user_id=user.id, post_id=OuterRef('pk'))
-        return Post.objects.annotate(likes_count=Count('likes')).annotate(liked=Exists(liked)).all()
+        return Post.objects.annotate(likes_count=Count('likes')).\
+            annotate(liked=Exists(liked)).\
+            select_related('user').all()
     # queryset = Post.objects.annotate(likes_count=Count('likes')).annotate(liked=Exists('liked')).all()
     #     if user.is_staff:
     #         return Post.objects.all()
